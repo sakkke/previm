@@ -79,7 +79,11 @@ function! previm#refresh_css() abort
       call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
-      call s:echo_err('[Previm]failed load custom css. ' . css_path)
+      if css_path =~ '^http\?s://'
+        call add(css, "@import url('" . css_path . "');")
+      else
+        call s:echo_err('[Previm]failed load custom css. ' . css_path)
+      endif
     endif
   endif
   if exists('g:previm_custom_css_paths')
@@ -90,7 +94,11 @@ function! previm#refresh_css() abort
         call s:File.copy(css_path, previm#make_preview_file_path('css/' . css_path_t))
         call add(css, "@import url('" . css_path_t . "');")
       else
-        call s:echo_err('[Previm]failed load custom css. ' . css_path)
+        if css_path =~ '^http\?s://'
+          call add(css, "@import url('" . css_path . "');")
+        else
+          call s:echo_err('[Previm]failed load custom css. ' . css_path)
+        endif
       endif
     endfor
   endif
