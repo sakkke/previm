@@ -82,6 +82,18 @@ function! previm#refresh_css() abort
       call s:echo_err('[Previm]failed load custom css. ' . css_path)
     endif
   endif
+  if exists('g:previm_custom_css_paths')
+    let css_paths = map(g:previm_custom_css_paths, 'expand(v:val)')
+    for css_path in css_paths
+      if filereadable(css_path)
+        let css_path_t = fnamemodify(css_path, ':t')
+        call s:File.copy(css_path, previm#make_preview_file_path('css/' . css_path_t))
+        call add(css, "@import url('" . css_path_t . "');")
+      else
+        call s:echo_err('[Previm]failed load custom css. ' . css_path)
+      endif
+    endfor
+  endif
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
 endfunction
 
